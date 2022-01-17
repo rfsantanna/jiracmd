@@ -19,3 +19,6 @@ def cli():
 def first_command(example, option):
     "Command description goes here"
     click.echo("Here is some output")
+
+if __name__ == "__main__":
+    cli()
