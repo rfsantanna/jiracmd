@@ -4,6 +4,7 @@ from .cmd import worklog
 from jira import JIRA
 
 @click.group()
+@click.version_option()
 @click.pass_context
 def cli(ctx):
     USERNAME = os.getenv('JIRA_USERNAME')
