@@ -1,6 +1,6 @@
 import os
 import click
-from cmd import worklog
+from .cmd import worklog
 from jira import JIRA
 
 @click.group()
