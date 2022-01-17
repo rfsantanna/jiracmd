@@ -50,7 +50,7 @@ jobs:
         pip install setuptools wheel twine build
     - name: Publish
       env:
-        TWINE_USERNAME: rfsantanna
+        TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
       run: |
         python -m build
