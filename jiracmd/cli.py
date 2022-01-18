@@ -1,7 +1,7 @@
 import os
 import click
-from .cmd import worklog
 from jira import JIRA
+from jiracmd import worklog
 
 @click.group()
 @click.version_option()
@@ -48,25 +48,6 @@ cli_worklog.add_command(worklog_add)
 
 
 
-
-#@click.group()jgg
-#@click.version_option()
-#def cli():
-#    "Jira Command Line Tool"
-#
-#
-#@cli.command(name="command")
-#@click.argument(
-#    "example"
-#)
-#@click.option(
-#    "-o",
-#    "--option",
-#    help="An example option",
-#)
-#def first_command(example, option):
-#    "Command description goes here"
-#    click.echo("Here is some output")
 
 if __name__ == "__main__":
     cli()
