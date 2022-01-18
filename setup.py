@@ -1,8 +1,7 @@
 from setuptools import setup
-import jiracmd
 import os
 
-VERSION = jiracmd.__version__
+VERSION = "0.0.3"
 
 
 def get_long_description():
