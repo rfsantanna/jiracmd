@@ -1,7 +1,6 @@
 import click
 import datetime
 import json
-from jiracmd import jira_client
 
 
 @click.group(name="worklog")
@@ -23,8 +22,8 @@ def worklog_add(issue, date, start, end, time_spent):
     hours, remainder = divmod(time_diff.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
     spent_time = f"{hours}h {minutes}m"
-    #click.echo(f'== Worklog: add {issue} on {start_date}, spent {spent_time}')
-    response = jira_client.add_worklog(issue, started=start_date, timeSpent=spent_time)
+    click.echo(f'== Worklog: add {issue} on {start_date}, spent {spent_time}')
+    #response = jira_client.add_worklog(issue, started=start_date, timeSpent=spent_time)
     print(json.dumps(response.raw, indent=2))
 
 
