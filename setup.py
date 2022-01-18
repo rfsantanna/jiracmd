@@ -31,7 +31,7 @@ setup(
         [console_scripts]
         jiracmd=jiracmd.cli:cli
     """,
-    install_requires=["click", "jira"],
+    install_requires=["click", "requests"],
     extras_require={
         "test": ["pytest"]
     },

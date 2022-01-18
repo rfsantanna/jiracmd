@@ -24,7 +24,6 @@ def worklog_add(issue, date, start, end, time_spent):
     spent_time = f"{hours}h {minutes}m"
     click.echo(f'== Worklog: add {issue} on {start_date}, spent {spent_time}')
     #response = jira_client.add_worklog(issue, started=start_date, timeSpent=spent_time)
-    print(json.dumps(response.raw, indent=2))
 
 
 @click.command(name="list")
