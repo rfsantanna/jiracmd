@@ -1,6 +1,6 @@
 from jira import JIRA
 
-def worklog__add():
+def add():
     print(" --- Adding worklogs")
 
 def list():
