@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
+
  
 @dataclass
 class Worklog:
@@ -10,13 +11,12 @@ class Worklog:
     timeSpent: str
     timeSpentSeconds: int 
     issueId: str
-    created: datetime
-    updated: datetime
-    started: datetime
-
-    def __post__init(self):
-        pass
+    created: str
+    updated: str
+    started: str
 
     def __repr__(self):
-        return f"Worklog(id={self.id}, timeSpent={self.timeSpent}, started={self.started})"
+        date_started = datetime.strptime(self.started, '%Y-%m-%dT%H:%M:%S.000%z')
+        started = date_started.strftime('%Y-%m-%d %H:%M')
+        return f"Worklog(id={self.id}, timeSpent={self.timeSpent}, started={started})"
         

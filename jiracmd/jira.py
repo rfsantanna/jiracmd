@@ -26,12 +26,11 @@ class JiraAPIClient():
 
     def _get(self, call, **kwargs):
         endpoint = self._get_endpoint(call) 
-        print(f"Get Request on {endpoint}")
         return self.session.get(endpoint)
 
     def _post(self, call, body, **kwargs):
         endpoint = self._get_endpoint(call)
-        print(f"Post Request on {endpoint}")
+        return self.session.post(endpoint, data=body)
 
 
 class JiraObject():

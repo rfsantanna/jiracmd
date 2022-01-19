@@ -26,7 +26,13 @@ def worklog_add(issue, date, start, end, time_spent):
     minutes, seconds = divmod(remainder, 60)
     spent_time = f"{hours}h {minutes}m"
     click.echo(f'== Worklog: add {issue} on {start_date}, spent {spent_time}')
-    #response = jira_client.add_worklog(issue, started=start_date, timeSpent=spent_time)
+    body = json.dumps({
+        "started": start_date.astimezone().strftime('%Y-%m-%dT%H:%M:%S.000%z'),
+        "timeSpent": spent_time
+    })
+    print(body)
+    response = cli.jira._post(f'issue/{issue}/worklog?adjustEstimate=auto', body)
+    click.echo(json.dumps(response.json()))
 
 
 @click.command(name="get")
