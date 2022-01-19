@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 import os
 
 VERSION = "0.0.3"
@@ -26,7 +26,7 @@ setup(
     },
     license="Apache License, Version 2.0",
     version=VERSION,
-    packages=["jiracmd"],
+    packages=find_packages(),
     entry_points="""
         [console_scripts]
         jiracmd=jiracmd.cli:cli

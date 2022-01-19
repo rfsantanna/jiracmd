@@ -1,10 +1,11 @@
+import json
 import click
 import datetime
-import json
+from jiracmd import cli
 
 
 @click.group(name="worklog")
-def cli_worklog():
+def worklog_cli():
     pass
 
 @click.command(name="add")
@@ -26,13 +27,14 @@ def worklog_add(issue, date, start, end, time_spent):
     #response = jira_client.add_worklog(issue, started=start_date, timeSpent=spent_time)
 
 
-@click.command(name="list")
-@click.pass_obj
-@click.option('-i', '--issue')
-def worklog_list(jira, issue):
+@click.command(name="get")
+@click.option('-i', '--issue', required=True)
+def worklog_get(issue):
     click.echo(':: Worklog List')
-    click.echo(jira)
-    worklog.list()
+    response = cli.jira._get(f'issue/{issue}/worklog')
+    print(json.dumps(response.json(), indent=2))
 
-cli_worklog.add_command(worklog_add)
-cli_worklog.add_command(worklog_list)
+
+
+worklog_cli.add_command(worklog_add)
+worklog_cli.add_command(worklog_get)
