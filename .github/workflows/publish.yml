@@ -8,7 +8,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: ./.github/workflows/test
+    - uses: ./.github/workflows/test.yml@main
 
   deploy:
     runs-on: ubuntu-latest
