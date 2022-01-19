@@ -1,6 +1,7 @@
 import os
 import click
 from jiracmd.cli.worklog import worklog_cli
+from jiracmd.cli.issue import issue_cli
 from jiracmd.jira import JiraAPIClient
 
 @click.group()
@@ -9,6 +10,7 @@ def cli():
     pass
 
 cli.add_command(worklog_cli)
+cli.add_command(issue_cli)
 
 jira = JiraAPIClient(
     os.getenv('JIRA_SERVER'),
