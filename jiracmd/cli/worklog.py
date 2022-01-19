@@ -1,7 +1,9 @@
 import json
 import click
 import datetime
+from pprint import pprint
 from jiracmd import cli
+from jiracmd.objects import Worklog
 
 
 @click.group(name="worklog")
@@ -32,9 +34,8 @@ def worklog_add(issue, date, start, end, time_spent):
 def worklog_get(issue):
     click.echo(':: Worklog List')
     response = cli.jira._get(f'issue/{issue}/worklog')
-    print(json.dumps(response.json(), indent=2))
-
-
+    worklogs = [Worklog(**w) for w in response.json()['worklogs']]
+    pprint(worklogs)
 
 worklog_cli.add_command(worklog_add)
 worklog_cli.add_command(worklog_get)

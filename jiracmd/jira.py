@@ -34,3 +34,13 @@ class JiraAPIClient():
         print(f"Post Request on {endpoint}")
 
 
+class JiraObject():
+
+    def __init__(self, jira_object):
+        self.object = jira_object
+
+    def output_table(self):
+        pass
+
+    def output_yaml(self):
+        pass
