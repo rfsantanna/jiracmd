@@ -4,6 +4,7 @@ import datetime
 from pprint import pprint
 from jiracmd import cli
 from jiracmd.objects import Worklog
+from jiracmd.utils import output_table
 
 
 @click.group(name="worklog")
@@ -36,8 +37,10 @@ def worklog_add(issue, date, start, end):
 @click.option('-i', '--issue', required=True)
 def worklog_list(issue):
     response = cli.jira._get(f'issue/{issue}/worklog')
+    worklogs = response.json()['worklogs']
     worklogs = [Worklog(**w) for w in response.json()['worklogs']]
-    pprint(worklogs)
+    worklogs_table = [w._table_dict() for w in worklogs]
+    output_table(worklogs_table)
 
 @click.command(name="delete")
 @click.option('-i', '--issue', required=True)
