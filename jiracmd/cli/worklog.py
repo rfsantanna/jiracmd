@@ -1,8 +1,7 @@
 import json
 import click
 import datetime
-from pprint import pprint
-from jiracmd import cli
+from jiracmd.auth import jira
 from jiracmd.objects import Worklog
 from jiracmd.utils import output_table
 
@@ -29,23 +28,24 @@ def worklog_add(issue, date, start, end):
         "started": start_date.astimezone().strftime('%Y-%m-%dT%H:%M:%S.000%z'),
         "timeSpent": time_spent
     })
-    response = cli.jira._post(f'issue/{issue}/worklog?adjustEstimate=auto', body)
+    response = jira._post(f'issue/{issue}/worklog?adjustEstimate=auto', body)
     click.echo(Worklog(**response.json()))
 
 
 @click.command(name="list")
 @click.option('-i', '--issue', required=True)
-def worklog_list(issue):
-    response = cli.jira._get(f'issue/{issue}/worklog')
+@click.option('-s', '--sort-by', default="started")
+def worklog_list(issue, sort_by):
+    response = jira._get(f'issue/{issue}/worklog')
     worklogs = [Worklog(**w) for w in response.json()['worklogs']]
     worklogs_table = [w._table_dict() for w in worklogs]
-    output_table(worklogs_table)
+    output_table(worklogs_table, sort_by=sort_by)
 
 @click.command(name="delete")
 @click.option('-i', '--issue', required=True)
 @click.option('-w', '--worklog-id', required=True)
 def worklog_delete(issue, worklog_id):
-    response = cli.jira._delete(f'issue/{issue}/worklog/{worklog_id}')
+    response = jira._delete(f'issue/{issue}/worklog/{worklog_id}')
     try:
         response.json()
         click.echo(json.dumps(response.json(), indent=2))

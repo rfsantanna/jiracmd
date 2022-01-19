@@ -1,5 +1,6 @@
 import requests
 import base64
+import json
 from datetime import datetime
 from abc import ABC, abstractmethod
 
@@ -37,6 +38,9 @@ class JiraAPIClient():
     def _delete(self, call, **kwargs):
         endpoint = self._get_endpoint(call) 
         return self.session.delete(endpoint)
+
+    def get_issue(self, issue):
+        return self._get(f"issue/{issue}?expand=changelog").json()
 
 
 class JiraObject(ABC):
