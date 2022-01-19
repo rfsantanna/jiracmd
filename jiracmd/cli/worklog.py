@@ -24,7 +24,6 @@ def worklog_add(issue, date, start, end):
     hours, remainder = divmod(time_diff.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
     time_spent = f"{hours}h {minutes}m"
-    click.echo(f'== Worklog: add {issue} on {start_date}, spent {time_spent}')
     body = json.dumps({
         "started": start_date.astimezone().strftime('%Y-%m-%dT%H:%M:%S.000%z'),
         "timeSpent": time_spent
@@ -33,9 +32,9 @@ def worklog_add(issue, date, start, end):
     click.echo(Worklog(**response.json()))
 
 
-@click.command(name="get")
+@click.command(name="list")
 @click.option('-i', '--issue', required=True)
-def worklog_get(issue):
+def worklog_list(issue):
     response = cli.jira._get(f'issue/{issue}/worklog')
     worklogs = [Worklog(**w) for w in response.json()['worklogs']]
     pprint(worklogs)
@@ -53,4 +52,4 @@ def worklog_delete(issue, worklog_id):
 
 worklog_cli.add_command(worklog_add)
 worklog_cli.add_command(worklog_delete)
-worklog_cli.add_command(worklog_get)
+worklog_cli.add_command(worklog_list)
