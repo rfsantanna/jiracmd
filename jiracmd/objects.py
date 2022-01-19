@@ -38,16 +38,24 @@ class Issue(JiraObject):
     expand: str
     key: str
     fields: dict
+    summary: str = None
+    issue_type: str = None
+    updated: str = None
+
+
+    def __post_init__(self):
+        self.summary = self.fields['summary']
+        self.issue_type = self.fields['issuetype']['name']
+        self.updated = self._to_datetime(
+                self.fields['updated'],
+                return_string=True)
 
     def _table_dict(self):
         table_dict = {
             "Key": self.key,
-            "Type": self.fields['issuetype']['name'],
-            "Updated": self._to_datetime(
-                self.fields['updated'],
-                return_string=True
-            ),
-            "Summary": self.fields['summary']
+            "Type": self.issue_type,
+            "Updated": self.updated,
+            "Summary": self.summary
         }
         return table_dict
 
