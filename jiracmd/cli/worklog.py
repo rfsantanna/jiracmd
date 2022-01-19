@@ -37,7 +37,6 @@ def worklog_add(issue, date, start, end):
 @click.option('-i', '--issue', required=True)
 def worklog_list(issue):
     response = cli.jira._get(f'issue/{issue}/worklog')
-    worklogs = response.json()['worklogs']
     worklogs = [Worklog(**w) for w in response.json()['worklogs']]
     worklogs_table = [w._table_dict() for w in worklogs]
     output_table(worklogs_table)

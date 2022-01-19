@@ -2,6 +2,8 @@ import json
 import click
 from jiracmd import cli
 from datetime import datetime
+from jiracmd.objects import Issue
+from jiracmd.utils import output_table
 
 
 @click.group(name="issue")
@@ -23,16 +25,9 @@ def issue_list(me, issue_type):
         type_query = f"and issueType={issue_type}"
     jql = f"assignee=currentuser() {type_query}"
     response = cli.jira._get(f'search?maxResults=100&jql={jql}')
-    issues = response.json()['issues']
-    print(f"{'Issue':12}{'Type':12}{'Updated':12}{'Summary'}")
-    print(f"{'-----':12}{'----':12}{'-------':12}{'-------'}")
-    for i in issues:
-        key = i['key']
-        summary = i['fields']['summary']
-        updated = datetime.strptime(i['fields']['updated'], '%Y-%m-%dT%H:%M:%S.%f%z')
-        i_type = i['fields']['issuetype']['name']
-        date = str(updated.date())
-        print(f"{key:12}{i_type:12}{date:12}{summary[:65]}...")
+    issues = [Issue(**i) for i in response.json()['issues']]
+    issues_table = [issue._table_dict() for issue in issues]
+    output_table(issues_table)
 
 issue_cli.add_command(issue_get)
 issue_cli.add_command(issue_list)

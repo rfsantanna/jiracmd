@@ -1,5 +1,7 @@
 import requests
 import base64
+from datetime import datetime
+from abc import ABC, abstractmethod
 
 API_VERSION = 3
 
@@ -37,13 +39,13 @@ class JiraAPIClient():
         return self.session.delete(endpoint)
 
 
-class JiraObject():
+class JiraObject(ABC):
+    @abstractmethod
+    def _table_dict(self, date_string, return_string=False):
+        return
 
-    def __init__(self, jira_object):
-        self.object = jira_object
-
-    def output_table(self):
-        pass
-
-    def output_yaml(self):
-        pass
+    def _to_datetime(self, date_string, return_string=False):
+        date_obj = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S.%f%z')
+        if return_string:
+            return date_obj.strftime('%Y-%m-%d %H:%M')
+        return date_obj
