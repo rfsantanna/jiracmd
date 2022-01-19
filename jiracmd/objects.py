@@ -1,3 +1,4 @@
+import json
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -8,8 +9,8 @@ class Worklog:
     self: str
     author: dict
     updateAuthor: dict
-    timeSpent: str
-    timeSpentSeconds: int 
+    timeSpent: str 
+    timeSpentSeconds: int
     issueId: str
     created: str
     updated: str
@@ -19,4 +20,4 @@ class Worklog:
         date_started = datetime.strptime(self.started, '%Y-%m-%dT%H:%M:%S.000%z')
         started = date_started.strftime('%Y-%m-%d %H:%M')
         return f"Worklog(id={self.id}, timeSpent={self.timeSpent}, started={started})"
-        
+

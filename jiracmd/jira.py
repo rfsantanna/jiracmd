@@ -32,6 +32,10 @@ class JiraAPIClient():
         endpoint = self._get_endpoint(call)
         return self.session.post(endpoint, data=body)
 
+    def _delete(self, call, **kwargs):
+        endpoint = self._get_endpoint(call) 
+        return self.session.delete(endpoint)
+
 
 class JiraObject():
 
