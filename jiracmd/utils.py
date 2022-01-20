@@ -7,3 +7,8 @@ def output_table(obj, sort_by=None, reverse=False):
     print(table)
     return table
 
+def yaml_multiline_string_pipe(dumper, data):
+    if len(data.splitlines()) > 1:
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data, style="|")
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data)
+

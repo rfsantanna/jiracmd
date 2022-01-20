@@ -5,6 +5,7 @@ import yaml
 from datetime import datetime
 from dataclasses import asdict
 from abc import ABC, abstractmethod
+from jiracmd.utils import yaml_multiline_string_pipe
 
 API_VERSION = 3
 
@@ -48,11 +49,6 @@ class JiraObject(ABC):
     def _table_dict(self):
         return
 
-    def _yaml_string(self, dumper, data):
-        if len(data.splitlines()) > 1:
-            return dumper.represent_scalar('tag:yaml.org,2002:str', data, style="|")
-        return dumper.represent_scalar('tag:yaml.org,2002:str', data)
-
     def to_dict(self):
         return asdict(self)
 
@@ -60,7 +56,7 @@ class JiraObject(ABC):
         return json.dumps(asdict(self), indent=2, ensure_ascii=False)
 
     def to_yaml(self):
-        yaml.add_representer(str, self._yaml_string)
+        yaml.add_representer(str, yaml_multiline_string_pipe)
         return yaml.dump(asdict(self), allow_unicode=True)
 
     def _to_datetime(self, date_string, return_string=False):
