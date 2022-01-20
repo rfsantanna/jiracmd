@@ -45,7 +45,7 @@ class JiraAPIClient():
 
 class JiraObject(ABC):
     @abstractmethod
-    def _table_dict(self, date_string, return_string=False):
+    def _table_dict(self):
         return
 
     def _yaml_string(self, dumper, data):
