@@ -12,9 +12,10 @@ def issue_cli():
 
 @click.command(name="get")
 @click.option('-i', '--issue', required=True)
-def issue_get(issue):
-    response = jira._get(f'issue/{issue}?expand=changelog')
-    print(json.dumps(response.json(), indent=2))
+@click.option('-o', '--output', default="yaml")
+def issue_get(issue, output):
+    response = jira._get(f'issue/{issue}') # ?expand=changelog')
+    print(Issue(**response.json()).get_outputs().get(output))
 
 @click.command(name="list")
 @click.option('--me', is_flag=True, default=True)

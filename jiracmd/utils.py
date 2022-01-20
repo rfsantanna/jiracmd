@@ -7,4 +7,3 @@ def output_table(obj, sort_by=None):
     print(table)
     return table
 
-    
