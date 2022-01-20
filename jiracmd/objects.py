@@ -20,6 +20,7 @@ class Issue(JiraObject):
         self.updated = self._to_datetime(
                 self.fields['updated'],
                 return_string=True)
+        worklog = self.fields.pop('worklog', None)
 
     def _table_dict(self):
         table_dict = {
@@ -49,7 +50,7 @@ class Worklog(JiraObject):
 
     def __repr__(self):
         date_started = self._to_datetime(self.started, return_string=True)
-        return f"Worklog(id={self.id}, timeSpent={self.timeSpent}, started={started})"
+        return f"Worklog(id={self.id}, timeSpent={self.timeSpent}, started={date_started})"
 
     def _table_dict(self):
         table_dict = {

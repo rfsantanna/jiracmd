@@ -13,8 +13,12 @@ def issue_cli():
 @click.command(name="get")
 @click.option('-i', '--issue', required=True)
 @click.option('-o', '--output', default="yaml")
-def issue_get(issue, output):
-    response = jira._get(f'issue/{issue}') # ?expand=changelog')
+@click.option('-c', '--changelog', is_flag=True, default=False)
+def issue_get(issue, output, changelog):
+    call = f"issue/{issue}"
+    if changelog:
+        call += "&expand=changelog"
+    response = jira._get(f'issue/{issue}')
     print(Issue(**response.json()).get_outputs().get(output))
 
 @click.command(name="list")
