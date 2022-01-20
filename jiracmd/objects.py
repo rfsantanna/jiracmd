@@ -45,8 +45,10 @@ class Worklog(JiraObject):
     started: str
     issueKey: str = None
 
-    def __post_init__(self):
-        self.issueKey = jira.get_issue(self.issueId)['key']
+    def __post_init__(self, issue_key=None):
+        if not issue_key:
+            issue_key = jira.get_issue(self.issueId)['key']
+        self.issueKey = issue_key
 
     def __repr__(self):
         date_started = self._to_datetime(self.started, return_string=True)
