@@ -37,7 +37,7 @@ def worklog_add(issue, date, start, end):
 @click.option('-s', '--sort-by', default="started")
 def worklog_list(issue, sort_by):
     response = jira._get(f'issue/{issue}/worklog')
-    worklogs = [Worklog(**w) for w in response.json()['worklogs']]
+    worklogs = [Worklog(issue_key=issue, **w) for w in response.json()['worklogs']]
     worklogs_table = [w._table_dict() for w in worklogs]
     output_table(worklogs_table, sort_by=sort_by)
 
