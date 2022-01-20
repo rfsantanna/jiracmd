@@ -43,12 +43,11 @@ class Worklog(JiraObject):
     created: str
     updated: str
     started: str
-    issueKey: str = None
+    issue_key: str = None
 
-    def __post_init__(self, issue_key=None):
-        if not issue_key:
-            issue_key = jira.get_issue(self.issueId)['key']
-        self.issueKey = issue_key
+    def __post_init__(self):
+        if not self.issue_key:
+            self.issue_key = jira.get_issue(self.issueId)['key']
 
     def __repr__(self):
         date_started = self._to_datetime(self.started, return_string=True)
@@ -57,7 +56,8 @@ class Worklog(JiraObject):
     def _table_dict(self):
         table_dict = {
             "id": self.id,
-            "issueKey": self.issueKey,
+            "author": self.author['displayName'],
+            "issueKey": self.issue_key,
             "started": self._to_datetime(
                 self.started,
                 return_string=True
