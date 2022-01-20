@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 
 
 def get_long_description():
@@ -31,7 +31,7 @@ setup(
         [console_scripts]
         jiracmd=jiracmd.cli:cli
     """,
-    install_requires=["click", "requests", "tabulate"],
+    install_requires=["click", "requests", "tabulate", "pyyaml"],
     extras_require={
         "test": ["pytest"]
     },
