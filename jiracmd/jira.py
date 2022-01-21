@@ -61,7 +61,7 @@ class JiraObject(ABC):
         obj_dict = obj or asdict(self)
         return yaml.dump(obj_dict, allow_unicode=True)
 
-    def _to_datetime(self, date_string, return_string=False):
+    def datetime_field(self, date_string, return_string=False):
         date_obj = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S.%f%z')
         if return_string:
             return date_obj.strftime('%Y-%m-%d %H:%M')

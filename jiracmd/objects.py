@@ -17,7 +17,7 @@ class Issue(JiraObject):
     def __post_init__(self):
         self.summary = self.fields['summary']
         self.issue_type = self.fields['issuetype']['name']
-        self.updated = self._to_datetime(
+        self.updated = self.datetime_field(
                 self.fields['updated'],
                 return_string=True)
         worklog = self.fields.pop('worklog', None)
@@ -50,7 +50,7 @@ class Worklog(JiraObject):
             self.issue_key = jira.get_issue(self.issueId)['key']
 
     def __repr__(self):
-        date_started = self._to_datetime(self.started, return_string=True)
+        date_started = self.datetime_field(self.started, return_string=True)
         return f"Worklog(id={self.id}, timeSpent={self.timeSpent}, started={date_started})"
 
     def to_short_dict(self):
@@ -58,7 +58,7 @@ class Worklog(JiraObject):
             "id": self.id,
             "author": self.author['displayName'],
             "issueKey": self.issue_key,
-            "started": self._to_datetime(
+            "started": self.datetime_field(
                 self.started,
                 return_string=True
             ),
