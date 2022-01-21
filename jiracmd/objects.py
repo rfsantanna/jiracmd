@@ -22,14 +22,20 @@ class Issue(JiraObject):
                 return_string=True)
         worklog = self.fields.pop('worklog', None)
 
-    def to_short_dict(self):
+    def to_short_dict(self, remove_items=[]):
         table_dict = {
             "key": self.key,
             "type": self.issue_type,
+            "assignee": self.fields['assignee']['displayName'],
             "updated": self.updated,
-            "summary": self.summary
+            "summary": self.summary,
+            "description": self.fields['description']
         }
-        return table_dict
+        filtered_dict = {
+            k:v for (k,v) in table_dict.items()
+            if k not in remove_items
+        }
+        return filtered_dict
 
 @dataclass
 class Worklog(JiraObject):

@@ -6,12 +6,13 @@ from datetime import datetime
 from dataclasses import asdict
 from abc import ABC, abstractmethod
 from jiracmd.utils import yaml_multiline_string_pipe
+from urllib.parse import urlencode
 
-API_VERSION = 3
 
 class JiraAPIClient():
     def __init__(self, server, username, token):
-        self.base_url = f"https://{server}/rest/api/{API_VERSION}"
+        self.base_url = f"https://{server}/rest/api"
+        self.api_version = 3
         self.headers = self._generate_header(username, token)
         self.session = requests.Session()
         self.session.headers.update(self.headers)
@@ -24,12 +25,12 @@ class JiraAPIClient():
             "Content-Type": "application/json"
         }
 
-    def _get_endpoint(self, suffix):
-        endpoint = f"{self.base_url}/{suffix}"
+    def _get_endpoint(self, suffix, api_version=3):
+        endpoint = f"{self.base_url}/{api_version}/{suffix}"
         return endpoint
 
-    def _get(self, call, **kwargs):
-        endpoint = self._get_endpoint(call) 
+    def _get(self, call, api_version=3, **kwargs):
+        endpoint = self._get_endpoint(call, api_version=api_version) 
         return self.session.get(endpoint)
 
     def _post(self, call, body, **kwargs):
@@ -40,8 +41,12 @@ class JiraAPIClient():
         endpoint = self._get_endpoint(call) 
         return self.session.delete(endpoint)
 
-    def get_issue(self, issue):
-        return self._get(f"issue/{issue}?expand=changelog").json()
+    def get_issue(self, issue, params=[], api_version=2):
+        call = f"issue/{issue}"
+        if params:
+            encoded_params = "?" + "&".join([urlencode(p) for p in params])
+            call += encoded_params
+        return self._get(call, api_version=api_version).json()
 
 
 class JiraObject(ABC):
