@@ -14,12 +14,13 @@ def issue_cli():
 @click.option('-i', '--issue', required=True)
 @click.option('-o', '--output', default="yaml")
 @click.option('-c', '--changelog', is_flag=True, default=False)
-def issue_get(issue, output, changelog):
+@click.option('--short', is_flag=True, default=False)
+def issue_get(issue, output, changelog, short):
     call = f"issue/{issue}"
     if changelog:
         call += "&expand=changelog"
     response = jira._get(f'issue/{issue}')
-    print(Issue(**response.json()).get_outputs().get(output))
+    print(Issue(**response.json()).get_outputs(short=short).get(output))
 
 @click.command(name="list")
 @click.option('--me', is_flag=True, default=True)
@@ -32,7 +33,7 @@ def issue_list(me, issue_type, sort_by):
     jql = f"assignee=currentuser() {type_query}"
     response = jira._get(f'search?maxResults=100&jql={jql}')
     issues = [Issue(**i) for i in response.json()['issues']]
-    issues_table = [issue._table_dict() for issue in issues]
+    issues_table = [issue.to_short_dict() for issue in issues]
     output_table(issues_table, sort_by=sort_by)
 
 issue_cli.add_command(issue_get)

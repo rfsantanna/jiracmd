@@ -10,6 +10,17 @@ from jiracmd.utils import output_table
 def worklog_cli():
     pass
 
+@click.command(name="get")
+@click.option('-w', '--worklog-id', required=True)
+@click.option('-i', '--issue', required=True)
+@click.option('-o', '--output', default="json")
+@click.option('--short', is_flag=True, default=False)
+def worklog_get(worklog_id, issue, output, short):
+    call = f"issue/{issue}/worklog/{worklog_id}"
+    response = jira._get(call)
+    print(Worklog(**response.json()).get_outputs(short=short).get(output))
+
+
 @click.command(name="add")
 @click.option('-i', '--issue', required=True)
 @click.option('-d', '--date', type=click.DateTime(formats=["%Y-%m-%d"]), default=str(datetime.date.today()))
@@ -38,7 +49,7 @@ def worklog_add(issue, date, start, end):
 def worklog_list(issue, sort_by):
     response = jira._get(f'issue/{issue}/worklog')
     worklogs = [Worklog(issue_key=issue, **w) for w in response.json()['worklogs']]
-    worklogs_table = [w._table_dict() for w in worklogs]
+    worklogs_table = [w.to_short_dict() for w in worklogs]
     output_table(worklogs_table, sort_by=sort_by)
 
 @click.command(name="delete")
@@ -52,6 +63,7 @@ def worklog_delete(issue, worklog_id):
     except ValueError:
         click.echo(response.content)
 
+worklog_cli.add_command(worklog_get)
 worklog_cli.add_command(worklog_add)
 worklog_cli.add_command(worklog_delete)
 worklog_cli.add_command(worklog_list)

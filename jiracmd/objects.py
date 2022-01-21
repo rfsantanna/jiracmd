@@ -22,7 +22,7 @@ class Issue(JiraObject):
                 return_string=True)
         worklog = self.fields.pop('worklog', None)
 
-    def _table_dict(self):
+    def to_short_dict(self):
         table_dict = {
             "key": self.key,
             "type": self.issue_type,
@@ -53,7 +53,7 @@ class Worklog(JiraObject):
         date_started = self._to_datetime(self.started, return_string=True)
         return f"Worklog(id={self.id}, timeSpent={self.timeSpent}, started={date_started})"
 
-    def _table_dict(self):
+    def to_short_dict(self):
         table_dict = {
             "id": self.id,
             "author": self.author['displayName'],

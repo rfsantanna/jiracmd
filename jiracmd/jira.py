@@ -46,18 +46,20 @@ class JiraAPIClient():
 
 class JiraObject(ABC):
     @abstractmethod
-    def _table_dict(self):
+    def to_short_dict(self):
         return
 
     def to_dict(self):
         return asdict(self)
 
-    def to_json(self):
-        return json.dumps(asdict(self), indent=2, ensure_ascii=False)
+    def to_json(self, obj={}):
+        obj_dict = obj or asdict(self)
+        return json.dumps(obj_dict, indent=2, ensure_ascii=False)
 
-    def to_yaml(self):
+    def to_yaml(self, obj={}):
         yaml.add_representer(str, yaml_multiline_string_pipe)
-        return yaml.dump(asdict(self), allow_unicode=True)
+        obj_dict = obj or asdict(self)
+        return yaml.dump(obj_dict, allow_unicode=True)
 
     def _to_datetime(self, date_string, return_string=False):
         date_obj = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S.%f%z')
@@ -65,10 +67,14 @@ class JiraObject(ABC):
             return date_obj.strftime('%Y-%m-%d %H:%M')
         return date_obj
 
-    def get_outputs(self):
+    def get_outputs(self, short=False):
+        output_dict = self.to_dict()
+        if short:
+            output_dict = self.to_short_dict()
+
         return {
-            "dict": self.to_dict(),
-            "json": self.to_json(),
-            "yaml": self.to_yaml(),
+            "dict": output_dict,
+            "json": self.to_json(output_dict),
+            "yaml": self.to_yaml(output_dict)
         }
 
