@@ -29,4 +29,7 @@ jobs:
     - name: Run tests
       run: |
         pytest -v
-
+      env:
+        JIRA_SERVER: jiratest.atlassian.net
+        JIRA_USERNAME: rafaelsantanna@jiratest.com
+        JIRA_API_TOKEN: LalsdaLWwkadasldwkwadwkdjs
