@@ -1,21 +1,32 @@
+import os
 import requests
 import base64
-import json
-import yaml
-from datetime import datetime
-from dataclasses import asdict
-from abc import ABC, abstractmethod
-from jiracmd.utils import yaml_multiline_string_pipe
+from getpass import getpass
 from urllib.parse import urlencode
+from jiracmd.objects import Worklog
 
 
 class JiraAPIClient():
-    def __init__(self, server, username, token):
+    def __init__(self):
+        server, username, token = self._authenticate()
         self.base_url = f"https://{server}/rest/api"
         self.api_version = 3
         self.headers = self._generate_header(username, token)
         self.session = requests.Session()
         self.session.headers.update(self.headers)
+
+    def _authenticate(self):
+        var_list = ['JIRA_SERVER', 'JIRA_USERNAME', 'JIRA_API_TOKEN']
+        for env_var in var_list:
+            if not os.getenv(env_var):
+                print(f'Check your environment variables: {var_list}')
+                exit(1)
+
+        return (
+            os.getenv('JIRA_SERVER'),
+            os.getenv('JIRA_USERNAME'),
+            os.getenv('JIRA_API_TOKEN')
+        )
 
     def _generate_header(self, username, token):
         auth_bytes = f"{username}:{token}".encode('ascii')
@@ -47,39 +58,19 @@ class JiraAPIClient():
             encoded_params = "?" + "&".join([urlencode(p) for p in params])
             call += encoded_params
         return self._get(call, api_version=api_version).json()
+    
+    def get_issue_worklogs(self, issue):
+        response = self._get(f'issue/{issue}/worklog').json()['worklogs']
+        worklog_list = [Worklog(issue_key=issue, **w) for w in response]
+        return worklog_list
+         
+    def validate_worklog(self, issue, start):
+        worklogs = self.get_issue_worklogs(issue)
+        for w in worklogs:
+            started = w.started
+            if started == start:
+                return f"duplicated_start_time {w}"
+                # if w.timeSpentSeconds == seconds:
+        return "ok"
 
-
-class JiraObject(ABC):
-    @abstractmethod
-    def to_short_dict(self):
-        return
-
-    def to_dict(self):
-        return asdict(self)
-
-    def to_json(self, obj={}):
-        obj_dict = obj or asdict(self)
-        return json.dumps(obj_dict, indent=2, ensure_ascii=False)
-
-    def to_yaml(self, obj={}):
-        yaml.add_representer(str, yaml_multiline_string_pipe)
-        obj_dict = obj or asdict(self)
-        return yaml.dump(obj_dict, allow_unicode=True)
-
-    def datetime_field(self, date_string, return_string=False):
-        date_obj = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S.%f%z')
-        if return_string:
-            return date_obj.strftime('%Y-%m-%d %H:%M')
-        return date_obj
-
-    def get_outputs(self, short=False):
-        output_dict = self.to_dict()
-        if short:
-            output_dict = self.to_short_dict()
-
-        return {
-            "dict": output_dict,
-            "json": self.to_json(output_dict),
-            "yaml": self.to_yaml(output_dict)
-        }
 

@@ -1,7 +1,47 @@
 import json
+import yaml
+from datetime import datetime
 from dataclasses import dataclass
-from jiracmd.jira import JiraObject
-from jiracmd.auth import jira
+from dataclasses import asdict
+from jiracmd.utils import yaml_multiline_string_pipe
+from abc import ABC, abstractmethod
+
+
+@dataclass
+class JiraObject(ABC):
+    @abstractmethod
+    def to_short_dict(self):
+        return
+
+    def to_dict(self):
+        return asdict(self)
+
+    def to_json(self, obj={}):
+        obj_dict = obj or asdict(self)
+        return json.dumps(obj_dict, indent=2, ensure_ascii=False)
+
+    def to_yaml(self, obj={}):
+        yaml.add_representer(str, yaml_multiline_string_pipe)
+        obj_dict = obj or asdict(self)
+        return yaml.dump(obj_dict, allow_unicode=True)
+
+    def datetime_field(self, date_string, return_string=False):
+        date_obj = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S.%f%z')
+        if return_string:
+            return date_obj.strftime('%Y-%m-%d %H:%M')
+        return date_obj
+
+    def get_outputs(self, short=False):
+        output_dict = self.to_dict()
+        if short:
+            output_dict = self.to_short_dict()
+
+        return {
+            "dict": output_dict,
+            "json": self.to_json(output_dict),
+            "yaml": self.to_yaml(output_dict)
+        }
+
 
 @dataclass
 class Issue(JiraObject):
@@ -10,8 +50,8 @@ class Issue(JiraObject):
     expand: str
     key: str
     fields: dict
-    summary: str = None
-    issue_type: str = None
+    summary: str = ""
+    issue_type: str = ""
     updated: str = None
 
     def __post_init__(self):
@@ -49,11 +89,7 @@ class Worklog(JiraObject):
     created: str
     updated: str
     started: str
-    issue_key: str = None
-
-    def __post_init__(self):
-        if not self.issue_key:
-            self.issue_key = jira.get_issue(self.issueId)['key']
+    issue_key: str = ""
 
     def __repr__(self):
         date_started = self.datetime_field(self.started, return_string=True)

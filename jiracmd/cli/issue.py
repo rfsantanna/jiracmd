@@ -1,7 +1,7 @@
 import json
 import click
-from jiracmd.auth import jira
 from datetime import datetime
+from jiracmd.jira import JiraAPIClient
 from jiracmd.objects import Issue
 from jiracmd.utils import output_table
 
@@ -40,3 +40,5 @@ def issue_list(assignee, issue_type, sort_by):
 issue_cli.add_command(issue_get)
 issue_cli.add_command(issue_list)
 
+
+jira = JiraAPIClient()
